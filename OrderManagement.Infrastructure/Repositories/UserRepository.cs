@@ -3,37 +3,37 @@ using OrderManagement.Core.Interfaces;
 
 namespace OrderManagement.Infrastructure.Repositories;
 
-public class ProductRepository : IRepository<Product>
+public class UserRepository : IRepository<User>
 {
     private readonly AppDbContext db;
 
-    public ProductRepository(AppDbContext context)
+    public UserRepository(AppDbContext context)
     {
         db = context;
     }
     
-    public Product? Get(Guid id)
+    public User? Get(Guid id)
     {
-        return db.Products
+        return db.Users
             .FirstOrDefault(o => o.Id == id);
     }
 
-    public List<Product> GetAll()
+    public List<User> GetAll()
     {
-        return db.Products
+        return db.Users
             .ToList();
     }
     
 
-    public void Add(Product product)
+    public void Add(User user)
     {
-        db.Products.Add(product);
+        db.Users.Add(user);
         db.SaveChanges();
     }
 
-    public void Edit(Product product)
+    public void Edit(User user)
     {
-        db.Products.Update(product);
+        db.Users.Update(user);
         db.SaveChanges();
     }
 }
