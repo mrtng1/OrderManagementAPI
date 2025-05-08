@@ -18,8 +18,39 @@ public class OrdersController : ControllerBase
     [HttpPost]
     public IActionResult CreateOrder(Guid userId, [FromBody] List<OrderItem> orderItems)
     {
-        var order = _orderService.CreateOrder(userId, orderItems, DateTime.UtcNow);
-        return Ok(order);
+        if (userId == Guid.Empty)
+        {
+            return BadRequest(new { message = "User ID cannot be empty." });
+        }
+
+        if (orderItems == null || !orderItems.Any())
+        {
+            return BadRequest(new { message = "Order items cannot be empty." });
+        }
+        
+        try
+        {
+            Order order = _orderService.CreateOrder(userId, orderItems, DateTime.UtcNow);
+            return Ok(new { message = "Order created successfully.", orderId = order.Id });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex) 
+        {
+            if (ex.Message.Contains("Product with ID") && ex.Message.Contains("not found"))
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            else if (ex.Message.Contains("Not enough stock for product"))
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            
+            return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
+        }
+        
     }
     
     [HttpGet]
