@@ -7,24 +7,35 @@ public class OrderService : IOrderService
 {
     private readonly IRepository<Order> _orderRepo;
     private readonly IRepository<Product> _productRepo;
+    private readonly IRepository<User> _userRepo;
 
-    public OrderService(IRepository<Order> orderRepo, IRepository<Product> productRepo)
+    public OrderService(IRepository<Order> orderRepo, IRepository<Product> productRepo, IRepository<User> userRepo)
     {
         _orderRepo = orderRepo;
         _productRepo = productRepo;
+        _userRepo = userRepo;
     }
 
     public List<Order> GetAllOrders() => _orderRepo.GetAll();
 
     public List<Order> GetUserOrders(Guid userId)
     {
+        User checkUser = _userRepo.Get(userId);
+        if (checkUser == null)
+            throw new Exception($"User '{userId}' not found");
+        
         return _orderRepo.GetAll().Where(x => x.UserId == userId).ToList();
     }
 
     public OrderStatus GetOrderStatus(Guid orderId) => _orderRepo.Get(orderId).Status;
+    public DateTime GetOrderDeliveryTime(Guid orderId) => _orderRepo.Get(orderId).DeliveryTime;
 
     public Order CreateOrder(Guid userId, List<OrderItem> orderItems, DateTime now)
     {
+        User checkUser = _userRepo.Get(userId);
+        if (checkUser == null)
+            throw new Exception($"User {userId} not found.");
+        
         List<Guid> productIds = orderItems.Select(x => x.ProductId).ToList();
         List<Product> products = _productRepo.GetAll().Where(x => productIds.Contains(x.Id)).ToList();
         
@@ -35,38 +46,103 @@ public class OrderService : IOrderService
                 throw new Exception($"Product with ID {item.ProductId} not found.");
             
             if (item.Quantity <= 0)
-            {
                 throw new ArgumentException($"Quantity for product '{product.Name}' must be positive.");
-            }
 
             if (item.Quantity > product.Stock)
                 throw new Exception($"Not enough stock for product '{product.Name}' (requested: {item.Quantity}, available: {product.Stock}).");
+
+            product.Stock -= item.Quantity;
         }
         
-        // get list of relevant products
-        // check if their stock is 
         Order order = new Order
         {
             UserId = userId,
             OrderItems = orderItems,
             CreatedAt = now,
-            Status = IsWeekend(now) ? OrderStatus.Created : OrderStatus.Processed
+            Status = OrderStatus.Created,
+            DeliveryTime = CalculateDeliveryTime(now, OrderStatus.Created),
         };
 
         _orderRepo.Add(order);
         return order;
     }
 
-    public void AdvanceOrderStatus(Guid orderId)
+    public OrderStatus AdvanceOrderStatus(Guid orderId)
     {
         Order order = _orderRepo.Get(orderId);
-        if (order == null) return;
-
-        if (order.Status == OrderStatus.Delivered) return;
+        if (order == null)
+            throw new Exception($"Order '{orderId}' not found.");
+            
+        if (order.Status == OrderStatus.Delivered) 
+            return order.Status;
 
         order.Status++;
+        order.DeliveryTime = CalculateDeliveryTime(DateTime.Now, order.Status);
         _orderRepo.Edit(order);
+        return order.Status;
     }
 
     private bool IsWeekend(DateTime date) => date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+
+    // original without status
+    // private DateTime CalculateDeliveryTime(DateTime orignalTime)
+    // {
+    //     DateTime adjustedDate = orignalTime;
+    //
+    //     if (adjustedDate.Hour >= 16)
+    //     {
+    //         adjustedDate = adjustedDate.AddDays(1);
+    //     }
+    //
+    //     int daysToAdd = 2;
+    //     DateTime deliveryDate = adjustedDate;
+    //
+    //     while (daysToAdd > 0)
+    //     {
+    //         deliveryDate = deliveryDate.AddDays(1);
+    //         if (!IsWeekend(deliveryDate))
+    //         {
+    //             daysToAdd--;
+    //         }
+    //     }
+    //
+    //     return deliveryDate;
+    // }
+    
+    /// <summary>
+    /// When status == Created -> +3 workdays without weekends
+    /// When status == Delivery -> +1 workday without weekends
+    /// </summary>
+    /// <param name="orignalTime"></param>
+    /// <param name="status"></param>
+    /// <returns></returns>
+    private DateTime CalculateDeliveryTime(DateTime orignalTime, OrderStatus status)
+    {
+        DateTime adjustedDate = orignalTime;
+
+        if (adjustedDate.Hour >= 16)
+        {
+            adjustedDate = adjustedDate.AddDays(1);
+        }
+
+        int daysToAdd = status switch
+        {
+            OrderStatus.Created => 3,
+            OrderStatus.Delivery => 1,
+            _ => 0
+        };
+
+        DateTime deliveryDate = adjustedDate;
+
+        while (daysToAdd > 0)
+        {
+            deliveryDate = deliveryDate.AddDays(1);
+            if (!IsWeekend(deliveryDate))
+            {
+                daysToAdd--;
+            }
+        }
+
+        return deliveryDate;
+    }
 }

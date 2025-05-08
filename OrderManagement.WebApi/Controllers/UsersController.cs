@@ -23,6 +23,13 @@ public class UsersController : ControllerBase
     [HttpPost]
     public IActionResult CreateUser(string username)
     {
-        return Ok(_userService.CreateUser(username));
+        try
+        {
+            return Ok(_userService.CreateUser(username));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

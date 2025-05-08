@@ -5,8 +5,7 @@ namespace OrderManagement.Core.Entities;
 public enum OrderStatus
 {
     Created,
-    Processed,
-    OutForDelivery,
+    Delivery,
     Delivered
 }
 
@@ -16,6 +15,7 @@ public class Order
     public Guid UserId { get; set; }
     public List<OrderItem> OrderItems { get; set; } = new();
     public DateTime CreatedAt { get; set; }
+    public DateTime DeliveryTime { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.Created;
 }
 

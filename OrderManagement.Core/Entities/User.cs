@@ -1,4 +1,6 @@
-﻿namespace OrderManagement.Core.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OrderManagement.Core.Entities;
 
 public class User
 {

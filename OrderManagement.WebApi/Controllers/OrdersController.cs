@@ -31,7 +31,7 @@ public class OrdersController : ControllerBase
         try
         {
             Order order = _orderService.CreateOrder(userId, orderItems, DateTime.UtcNow);
-            return Ok(new { message = "Order created successfully.", orderId = order.Id });
+            return Ok(new { message = "Order created successfully.", orderId = order.Id, deliveryTime = order.DeliveryTime });
         }
         catch (ArgumentException ex)
         {
@@ -58,24 +58,48 @@ public class OrdersController : ControllerBase
     {
         return Ok(_orderService.GetAllOrders());
     }
-
-    [HttpPost("{id}/advance")]
-    public IActionResult AdvanceOrder(Guid id)
+    
+    /// <summary>
+    /// Order/Package gets scanned and advances to the next status.
+    /// Created -> Delivery -> Delivered
+    /// </summary>
+    /// <param name="id">Order id</param>
+    /// <returns></returns>
+    [HttpPut("{id}/scan-order")]
+    public IActionResult ScanOrder(Guid id)
     {
-        _orderService.AdvanceOrderStatus(id);
-        return NoContent();
+        try
+        {
+            OrderStatus newStatus = _orderService.AdvanceOrderStatus(id);
+            return Ok(new { message = "Package set to delivery.", newStatus = newStatus.ToString() });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        
     }
     
     [HttpGet("by-user/{userId}")]
     public IActionResult GetUserOrders(Guid userId)
     {
-        return Ok(_orderService.GetUserOrders(userId));
+        try
+        {
+            return Ok(_orderService.GetUserOrders(userId));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
     
     [HttpGet("status/{id}")]
     public IActionResult GetOrderStatus(Guid id)
     {
-        return Ok(_orderService.GetOrderStatus(id));
+        OrderStatus status = _orderService.GetOrderStatus(id);
+        DateTime expectedDeliveryTime = _orderService.GetOrderDeliveryTime(id);
+        
+        return Ok(new { status = status.ToString(), expectedDeliveryTime });
     }
     
 }
