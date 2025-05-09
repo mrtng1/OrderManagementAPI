@@ -83,66 +83,34 @@ public class OrderService : IOrderService
     }
 
     private bool IsWeekend(DateTime date) => date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
-
-    // original without status
-    // private DateTime CalculateDeliveryTime(DateTime orignalTime)
-    // {
-    //     DateTime adjustedDate = orignalTime;
-    //
-    //     if (adjustedDate.Hour >= 16)
-    //     {
-    //         adjustedDate = adjustedDate.AddDays(1);
-    //     }
-    //
-    //     int daysToAdd = 2;
-    //     DateTime deliveryDate = adjustedDate;
-    //
-    //     while (daysToAdd > 0)
-    //     {
-    //         deliveryDate = deliveryDate.AddDays(1);
-    //         if (!IsWeekend(deliveryDate))
-    //         {
-    //             daysToAdd--;
-    //         }
-    //     }
-    //
-    //     return deliveryDate;
-    // }
     
-    /// <summary>
-    /// When status == Created -> +3 workdays without weekends
-    /// When status == Delivery -> +1 workday without weekends
-    /// </summary>
-    /// <param name="orignalTime"></param>
-    /// <param name="status"></param>
-    /// <returns></returns>
-    private DateTime CalculateDeliveryTime(DateTime orignalTime, OrderStatus status)
+    public DateTime CalculateDeliveryTime(DateTime originalTime, OrderStatus status)
     {
-        DateTime adjustedDate = orignalTime;
-
-        if (adjustedDate.Hour >= 16)
-        {
-            adjustedDate = adjustedDate.AddDays(1);
-        }
+        DateTime result = originalTime;
 
         int daysToAdd = status switch
         {
-            OrderStatus.Created => 3,
+            OrderStatus.Created => 2,
             OrderStatus.Delivery => 1,
             _ => 0
         };
 
-        DateTime deliveryDate = adjustedDate;
-
+        // Add Days & skip weekends
         while (daysToAdd > 0)
         {
-            deliveryDate = deliveryDate.AddDays(1);
-            if (!IsWeekend(deliveryDate))
+            result = result.AddDays(1);
+            if (!IsWeekend(result))
             {
                 daysToAdd--;
             }
         }
+        
+        // Ordered after closing time
+        if (result.Hour >= 16)
+        {
+            result = result.AddDays(1);
+        }
 
-        return deliveryDate;
+        return result;
     }
 }

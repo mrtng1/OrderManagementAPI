@@ -302,14 +302,14 @@ namespace OrderManagement.IntegrationTests.Features
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="TC6 - Created after 16:00")]
+        [Xunit.SkippableFactAttribute(DisplayName="TC6 - Created after closing time - 16:00")]
         [Xunit.TraitAttribute("FeatureTitle", "Create Order")]
-        [Xunit.TraitAttribute("Description", "TC6 - Created after 16:00")]
-        public void TC6_CreatedAfter1600()
+        [Xunit.TraitAttribute("Description", "TC6 - Created after closing time - 16:00")]
+        public void TC6_CreatedAfterClosingTime_1600()
         {
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("TC6 - Created after 16:00", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("TC6 - Created after closing time - 16:00", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 48
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -321,19 +321,191 @@ namespace OrderManagement.IntegrationTests.Features
             {
                 this.ScenarioStart();
 #line 49
-    testRunner.Given("the current time is \"2025-05-08T17:00:00\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("the current time is \"17:00:00\" during a random weekday", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 50
-    testRunner.And("a user exists with ID \"user-123\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("a user exists with ID \"f7cc96ba-e07a-4717-bcd0-3eff479b55ea\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
+                TechTalk.SpecFlow.Table table8 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductId",
+                            "Name",
+                            "Stock"});
+                table8.AddRow(new string[] {
+                            "f2aa11bb-3ac2-4d13-887e-123456789abc",
+                            "TestProduct",
+                            "10"});
 #line 51
-    testRunner.And("the product \"prod-1\" exists with stock 10", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("the following products exist with stock:", ((string)(null)), table8, "And ");
 #line hidden
-#line 52
-    testRunner.When("the user creates an order with quantity 1 for product \"prod-1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+                TechTalk.SpecFlow.Table table9 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductId",
+                            "Quantity"});
+                table9.AddRow(new string[] {
+                            "f2aa11bb-3ac2-4d13-887e-123456789abc",
+                            "1"});
+#line 54
+    testRunner.When("the user creates an order with the following items:", ((string)(null)), table9, "When ");
 #line hidden
-#line 53
-    testRunner.Then("the delivery date should be 3 working days after \"2025-05-09\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 57
+    testRunner.Then("the delivery date should be 3 working days after", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="TC7 - Created before closing time - 16:00")]
+        [Xunit.TraitAttribute("FeatureTitle", "Create Order")]
+        [Xunit.TraitAttribute("Description", "TC7 - Created before closing time - 16:00")]
+        public void TC7_CreatedBeforeClosingTime_1600()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("TC7 - Created before closing time - 16:00", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 59
+  this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 60
+    testRunner.Given("the current time is \"12:00:00\" during a random weekday", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 61
+    testRunner.And("a user exists with ID \"f7cc96ba-e07a-4717-bcd0-3eff479b55ea\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductId",
+                            "Name",
+                            "Stock"});
+                table10.AddRow(new string[] {
+                            "f2aa11bb-3ac2-4d13-887e-123456789abc",
+                            "TestProduct",
+                            "10"});
+#line 62
+    testRunner.And("the following products exist with stock:", ((string)(null)), table10, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductId",
+                            "Quantity"});
+                table11.AddRow(new string[] {
+                            "f2aa11bb-3ac2-4d13-887e-123456789abc",
+                            "1"});
+#line 65
+    testRunner.When("the user creates an order with the following items:", ((string)(null)), table11, "When ");
+#line hidden
+#line 68
+    testRunner.Then("the delivery date should be 2 working days after", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="TC8 - Weekend are skipped")]
+        [Xunit.TraitAttribute("FeatureTitle", "Create Order")]
+        [Xunit.TraitAttribute("Description", "TC8 - Weekend are skipped")]
+        public void TC8_WeekendAreSkipped()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("TC8 - Weekend are skipped", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 70
+  this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 71
+    testRunner.Given("the current time is \"12:00:00\" 3 days from today", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+#line 72
+    testRunner.And("a user exists with ID \"f7cc96ba-e07a-4717-bcd0-3eff479b55ea\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductId",
+                            "Name",
+                            "Stock"});
+                table12.AddRow(new string[] {
+                            "f2aa11bb-3ac2-4d13-887e-123456789abc",
+                            "TestProduct",
+                            "10"});
+#line 73
+    testRunner.And("the following products exist with stock:", ((string)(null)), table12, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductId",
+                            "Quantity"});
+                table13.AddRow(new string[] {
+                            "f2aa11bb-3ac2-4d13-887e-123456789abc",
+                            "1"});
+#line 76
+    testRunner.When("the user creates an order with the following items:", ((string)(null)), table13, "When ");
+#line hidden
+#line 79
+    testRunner.Then("the delivery date should skip Saturday and Sunday", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [Xunit.SkippableFactAttribute(DisplayName="TC9 - Create order with multiple items and partial stock")]
+        [Xunit.TraitAttribute("FeatureTitle", "Create Order")]
+        [Xunit.TraitAttribute("Description", "TC9 - Create order with multiple items and partial stock")]
+        public void TC9_CreateOrderWithMultipleItemsAndPartialStock()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("TC9 - Create order with multiple items and partial stock", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 81
+  this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 82
+    testRunner.Given("a user exists with ID \"f7cc96ba-e07a-4717-bcd0-3eff479b55ea\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductId",
+                            "Name",
+                            "Stock"});
+                table14.AddRow(new string[] {
+                            "f2aa11bb-3ac2-4d13-887e-123456789abc",
+                            "NotEnoughProduct",
+                            "10"});
+                table14.AddRow(new string[] {
+                            "36674882-0295-41e1-b0b5-4bfb2611e39c",
+                            "TestProduct",
+                            "3"});
+#line 83
+    testRunner.And("the following products exist with stock:", ((string)(null)), table14, "And ");
+#line hidden
+                TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+                            "ProductId",
+                            "Quantity"});
+                table15.AddRow(new string[] {
+                            "f2aa11bb-3ac2-4d13-887e-123456789abc",
+                            "35"});
+                table15.AddRow(new string[] {
+                            "36674882-0295-41e1-b0b5-4bfb2611e39c",
+                            "2"});
+#line 87
+    testRunner.When("the user creates an order with the following items:", ((string)(null)), table15, "When ");
+#line hidden
+#line 91
+    testRunner.Then("an error \"Not enough stock for product \'NotEnoughProduct\' (requested: 35, availab" +
+                        "le: 10).\" should be thrown", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

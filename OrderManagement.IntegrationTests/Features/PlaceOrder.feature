@@ -45,39 +45,47 @@ Feature: Create Order
       | f2aa11bb-3ac2-4d13-887e-123456789abc | 12        |
     Then an error "Not enough stock for product 'TestProduct' (requested: 12, available: 1)." should be thrown
 
-#  Scenario: TC6 - Created after 16:00
-#    Given the current time is "2025-05-08T17:00:00"
-#    And a user exists with ID "f7cc96ba-e07a-4717-bcd0-3eff479b55ea"
-#    And the following products exist with stock:
-#      | ProductId                            | Name        | Stock |
-#      | f2aa11bb-3ac2-4d13-887e-123456789abc | TestProduct | 10     |
-#    When the user creates an order with the following items:
-#      | ProductId                           | Quantity |
-#      | f2aa11bb-3ac2-4d13-887e-123456789abc | 1        |
-#    Then the delivery date should be 3 working days after "2025-05-09"
-#
-#  Scenario: TC7 - Created before 16:00
-#    Given the current time is "2025-05-08T14:00:00"
-#    And a user exists with ID "user-123"
-#    And the product "prod-1" exists with stock 10
-#    When the user creates an order with quantity 1 for product "prod-1"
-#    Then the delivery date should be 3 working days after "2025-05-08"
-#
-#  Scenario: TC8 - Weekend and holidays are skipped
-#    Given the current time is "2025-05-09T15:00:00" (Friday)
-#    And a user exists with ID "user-123"
-#    And the product "prod-1" exists with stock 10
-#    When the user creates an order
-#    Then the delivery date should skip Saturday and Sunday
-#
-#  Scenario: TC9 - Create order with multiple items and partial stock
-#    Given a user exists with ID "user-123"
-#    And the following products exist:
-#      | ProductId | Stock |
-#      | prod-1    | 2     |
-#      | prod-2    | 0     |
-#    When the user creates an order with the following items:
-#      | ProductId | Quantity |
-#      | prod-1    | 2        |
-#      | prod-2    | 1        |
-#    Then an error "Not enough stock for product 'prod-2'" should be thrown
+  Scenario: TC6 - Created after closing time - 16:00
+    Given the current time is "17:00:00" during a random weekday
+    And a user exists with ID "f7cc96ba-e07a-4717-bcd0-3eff479b55ea"
+    And the following products exist with stock:
+      | ProductId                            | Name        | Stock |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | TestProduct | 10     |
+    When the user creates an order with the following items:
+      | ProductId                           | Quantity |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | 1        |
+    Then the delivery date should be 3 working days after
+
+  Scenario: TC7 - Created before closing time - 16:00
+    Given the current time is "12:00:00" during a random weekday
+    And a user exists with ID "f7cc96ba-e07a-4717-bcd0-3eff479b55ea"
+    And the following products exist with stock:
+      | ProductId                            | Name        | Stock |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | TestProduct | 10     |
+    When the user creates an order with the following items:
+      | ProductId                           | Quantity |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | 1        |
+    Then the delivery date should be 2 working days after
+
+  Scenario: TC8 - Weekend are skipped
+    Given the current time is "12:00:00" 3 days from today
+    And a user exists with ID "f7cc96ba-e07a-4717-bcd0-3eff479b55ea"
+    And the following products exist with stock:
+      | ProductId                            | Name        | Stock |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | TestProduct | 10     |
+    When the user creates an order with the following items:
+      | ProductId                           | Quantity |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | 1        |
+    Then the delivery date should skip Saturday and Sunday
+
+  Scenario: TC9 - Create order with multiple items and partial stock
+    Given a user exists with ID "f7cc96ba-e07a-4717-bcd0-3eff479b55ea"
+    And the following products exist with stock:
+      | ProductId                            | Name        | Stock |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | NotEnoughProduct | 10     |
+      | 36674882-0295-41e1-b0b5-4bfb2611e39c | TestProduct | 3     |
+    When the user creates an order with the following items:
+      | ProductId                           | Quantity |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | 35        |
+      | 36674882-0295-41e1-b0b5-4bfb2611e39c | 2        |
+    Then an error "Not enough stock for product 'NotEnoughProduct' (requested: 35, available: 10)." should be thrown
