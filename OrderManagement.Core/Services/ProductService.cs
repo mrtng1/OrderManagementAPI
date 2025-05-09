@@ -1,4 +1,5 @@
-﻿using OrderManagement.Core.Entities;
+﻿using System.Data;
+using OrderManagement.Core.Entities;
 using OrderManagement.Core.Interfaces;
 
 namespace OrderManagement.Core.Services;
@@ -17,6 +18,10 @@ public class ProductService : IProductService
     
     public Product CreateProduct(string productName, decimal price, int stock)
     {
+        Product checkProduct = _productRepo.GetAll().FirstOrDefault(x => x.Name == productName);
+        if (checkProduct != null)
+            throw new DuplicateNameException($"Username {productName} already taken.");
+        
         Product product = new Product
         {
             Name = productName,

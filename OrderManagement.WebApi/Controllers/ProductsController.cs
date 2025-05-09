@@ -17,8 +17,14 @@ public class ProductsController : ControllerBase
     [HttpPost]
     public IActionResult CreateProduct(string productName, decimal price, int stock)
     {
-        var order = _productService.CreateProduct(productName, price, stock);
-        return Ok(order);
+        try
+        {
+            return Ok(_productService.CreateProduct(productName, price, stock));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
     
     [HttpGet]

@@ -84,7 +84,7 @@ public class OrderService : IOrderService
 
     private bool IsWeekend(DateTime date) => date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
     
-    public DateTime CalculateDeliveryTime(DateTime originalTime, OrderStatus status)
+    private DateTime CalculateDeliveryTime(DateTime originalTime, OrderStatus status)
     {
         DateTime result = originalTime;
 
