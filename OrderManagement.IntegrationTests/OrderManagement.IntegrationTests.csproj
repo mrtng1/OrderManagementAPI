@@ -26,6 +26,9 @@
       <ProjectReference Include="..\OrderManagement.Core\OrderManagement.Core.csproj" />
     </ItemGroup>
 
+
+
+
     <PropertyGroup>
         <GenerateSpecFlowCodeBehindFiles>true</GenerateSpecFlowCodeBehindFiles>
         <LangVersion>latest</LangVersion>

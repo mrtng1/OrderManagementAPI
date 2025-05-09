@@ -1,0 +1,204 @@
+{
+  "info": {
+    "name": "Order Management API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:5119/api/orders?userId=0d8e48d3-d38a-421b-9f56-fae031222fc4",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5119",
+          "path": [
+            "api",
+            "orders"
+          ],
+          "query": [
+            {
+              "key": "userId",
+              "value": "0d8e48d3-d38a-421b-9f56-fae031222fc4"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "[{\"productId\": \"6f129be7-ca5e-4796-8724-56429e30f40d\", \"quantity\": 1}]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has orderId\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"orderId\");",
+              "    pm.environment.set(\"orderId\", jsonData.orderId);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scan Order",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "if (!pm.environment.get(\"orderId\")) {",
+              "    postman.setNextRequest(null);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Has newStatus property\", function () {",
+              "    pm.expect(pm.response.json()).to.have.property(\"newStatus\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5119/api/orders/{{orderId}}/scan-order",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5119",
+          "path": [
+            "api",
+            "orders",
+            "{{orderId}}",
+            "scan-order"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Orders by User",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5119/api/orders/by-user/0d8e48d3-d38a-421b-9f56-fae031222fc4",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5119",
+          "path": [
+            "api",
+            "orders",
+            "by-user",
+            "0d8e48d3-d38a-421b-9f56-fae031222fc4"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Should return array of orders\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an(\"array\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Order Status",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "if (!pm.environment.get(\"orderId\")) {",
+              "    postman.setNextRequest(null);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response contains status property\", function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property(\"status\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5119/api/orders/status/{{orderId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5119",
+          "path": [
+            "api",
+            "orders",
+            "status",
+            "{{orderId}}"
+          ]
+        }
+      }
+    }
+  ]
+}
