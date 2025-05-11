@@ -56,7 +56,18 @@ Feature: Create Order
       | f2aa11bb-3ac2-4d13-887e-123456789abc | 1        |
     Then the delivery date should be 3 working days after
 
-  Scenario: TC7 - Created before closing time - 16:00
+  Scenario: TC7 - Created after closing time - 16:00 - on a weekend
+    Given the current time is "17:00:00" during a weekend
+    And a user exists with ID "f7cc96ba-e07a-4717-bcd0-3eff479b55ea"
+    And the following products exist with stock:
+      | ProductId                            | Name        | Stock |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | TestProduct | 10     |
+    When the user creates an order with the following items:
+      | ProductId                           | Quantity |
+      | f2aa11bb-3ac2-4d13-887e-123456789abc | 1        |
+    Then the delivery date should be 2 working days after
+
+  Scenario: TC8 - Created before closing time - 16:00
     Given the current time is "12:00:00" during a random weekday
     And a user exists with ID "f7cc96ba-e07a-4717-bcd0-3eff479b55ea"
     And the following products exist with stock:
@@ -67,7 +78,7 @@ Feature: Create Order
       | f2aa11bb-3ac2-4d13-887e-123456789abc | 1        |
     Then the delivery date should be 2 working days after
 
-  Scenario: TC8 - Weekend are skipped
+  Scenario: TC9 - Weekend are skipped
     Given the current time is "12:00:00" 3 days from today
     And a user exists with ID "f7cc96ba-e07a-4717-bcd0-3eff479b55ea"
     And the following products exist with stock:
@@ -78,7 +89,7 @@ Feature: Create Order
       | f2aa11bb-3ac2-4d13-887e-123456789abc | 1        |
     Then the delivery date should skip Saturday and Sunday
 
-  Scenario: TC9 - Create order with multiple items and partial stock
+  Scenario: TC10 - Create order with multiple items and partial stock
     Given a user exists with ID "f7cc96ba-e07a-4717-bcd0-3eff479b55ea"
     And the following products exist with stock:
       | ProductId                            | Name        | Stock |

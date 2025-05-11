@@ -39,19 +39,19 @@ public class OrderService : IOrderService
         List<Guid> productIds = orderItems.Select(x => x.ProductId).ToList();
         List<Product> products = _productRepo.GetAll().Where(x => productIds.Contains(x.Id)).ToList();
         
-        foreach (OrderItem item in orderItems)
+        foreach (OrderItem orderItem in orderItems)
         {
-            Product product = products.FirstOrDefault(p => p.Id == item.ProductId);
+            Product product = products.FirstOrDefault(p => p.Id == orderItem.ProductId);
             if (product == null)
-                throw new Exception($"Product with ID {item.ProductId} not found.");
+                throw new Exception($"Product with ID {orderItem.ProductId} not found.");
             
-            if (item.Quantity <= 0)
+            if (orderItem.Quantity <= 0)
                 throw new ArgumentException($"Quantity for product '{product.Name}' must be positive.");
 
-            if (item.Quantity > product.Stock)
-                throw new Exception($"Not enough stock for product '{product.Name}' (requested: {item.Quantity}, available: {product.Stock}).");
+            if (orderItem.Quantity > product.Stock)
+                throw new Exception($"Not enough stock for product '{product.Name}' (requested: {orderItem.Quantity}, available: {product.Stock}).");
 
-            product.Stock -= item.Quantity;
+            product.Stock -= orderItem.Quantity;
         }
         
         Order order = new Order
@@ -106,7 +106,7 @@ public class OrderService : IOrderService
         }
         
         // Ordered after closing time
-        if (result.Hour >= 16)
+        if (result.Hour >= 16 && !IsWeekend(originalTime))
         {
             result = result.AddDays(1);
         }

@@ -113,6 +113,31 @@ public class CreateOrderSteps
         );
     }
     
+    [Given(@"the current time is ""(.*)"" during a weekend")]
+    public void GivenTheCurrentTimeIsDuringWeekend(string datetimeStr)
+    {
+        if (!DateTime.TryParse(datetimeStr, out var parsedTime))
+        {
+            throw new ArgumentException("Invalid datetime format.");
+        }
+
+        DateTime today = DateTime.Now.Date;
+
+        DateTime daysUntilWeekend = Enumerable.Range(0, 7)
+            .Select(offset => today.AddDays(offset))
+            .First(d => d.DayOfWeek == DayOfWeek.Saturday || d.DayOfWeek == DayOfWeek.Sunday);
+
+        _currentDateTime = new DateTime(
+            daysUntilWeekend.Year,
+            daysUntilWeekend.Month,
+            daysUntilWeekend.Day,
+            parsedTime.Hour,
+            parsedTime.Minute,
+            parsedTime.Second
+        );
+    }
+
+    
     [Given(@"the current time is ""(.*)"" (.*) days from today")]
     public void GivenTheCurrentTimeIsDuringWeekdayAndDaysFromToday(string datetimeStr, int daysFromToday)
     {
