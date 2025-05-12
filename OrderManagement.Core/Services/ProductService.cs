@@ -18,9 +18,15 @@ public class ProductService : IProductService
     
     public Product CreateProduct(string productName, decimal price, int stock)
     {
+        if (productName.Length < 3 || productName.Length > 100) 
+            throw new Exception("Invalid product name length.");
+        
         Product checkProduct = _productRepo.GetAll().FirstOrDefault(x => x.Name == productName);
         if (checkProduct != null)
             throw new DuplicateNameException($"Username {productName} already taken.");
+
+        if (price <= 0m || stock <= 0)
+            throw new InvalidDataException("Invalid values.");
         
         Product product = new Product
         {
