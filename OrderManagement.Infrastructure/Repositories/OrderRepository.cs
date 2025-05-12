@@ -6,43 +6,43 @@ namespace OrderManagement.Infrastructure.Repositories;
 
 public class OrderRepository : IRepository<Order>
 {
-    private readonly AppDbContext db;
+    private readonly AppDbContext _db;
 
     public OrderRepository(AppDbContext context)
     {
-        db = context;
+        _db = context;
     }
 
     public Order? Get(Guid id)
     {
-        return db.Orders
+        return _db.Orders
             .Include(x => x.OrderItems)
             .FirstOrDefault(o => o.Id == id);
     }
 
     public List<Order> GetAll()
     {
-        return db.Orders
+        return _db.Orders
             .Include(x => x.OrderItems)
             .ToList();
     }
 
     public List<Order> GetUserOrders(Guid userId)
     {
-        return db.Orders
+        return _db.Orders
             .Where(o => o.UserId == userId)
             .ToList();
     }
 
     public void Add(Order order)
     {
-        db.Orders.Add(order);
-        db.SaveChanges();
+        _db.Orders.Add(order);
+        _db.SaveChanges();
     }
 
     public void Edit(Order order)
     {
-        db.Orders.Update(order);
-        db.SaveChanges();
+        _db.Orders.Update(order);
+        _db.SaveChanges();
     }
 }

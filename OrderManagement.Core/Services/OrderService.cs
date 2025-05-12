@@ -41,7 +41,7 @@ public class OrderService : IOrderService
         
         foreach (OrderItem orderItem in orderItems)
         {
-            Product product = products.FirstOrDefault(p => p.Id == orderItem.ProductId);
+            Product? product = products.FirstOrDefault(p => p.Id == orderItem.ProductId);
             if (product == null)
                 throw new Exception($"Product with ID {orderItem.ProductId} not found.");
             

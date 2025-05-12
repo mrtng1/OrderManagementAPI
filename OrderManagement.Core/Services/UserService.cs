@@ -21,8 +21,7 @@ public class UserService : IUserService
         if (username.Length < 3 || username.Length > 20) 
             throw new Exception("Invalid username length.");
         
-        User checkUser = _userRepo.GetAll().FirstOrDefault(x => x.Username == username);
-
+        User? checkUser = _userRepo.GetAll().FirstOrDefault(x => x.Username == username);
         if (checkUser != null)
             throw new DuplicateNameException($"Username {username} already taken.");
         

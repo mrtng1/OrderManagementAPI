@@ -16,7 +16,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult CreateOrder(Guid userId, [FromBody] List<OrderItem> orderItems)
+    public IActionResult CreateOrder(Guid userId, [FromBody] List<OrderItem>? orderItems)
     {
         if (userId == Guid.Empty)
         {

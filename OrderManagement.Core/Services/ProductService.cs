@@ -21,7 +21,7 @@ public class ProductService : IProductService
         if (productName.Length < 3 || productName.Length > 100) 
             throw new Exception("Invalid product name length.");
         
-        Product checkProduct = _productRepo.GetAll().FirstOrDefault(x => x.Name == productName);
+        Product? checkProduct = _productRepo.GetAll().FirstOrDefault(x => x.Name == productName);
         if (checkProduct != null)
             throw new DuplicateNameException($"Username {productName} already taken.");
 

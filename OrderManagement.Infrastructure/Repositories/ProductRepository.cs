@@ -5,35 +5,35 @@ namespace OrderManagement.Infrastructure.Repositories;
 
 public class ProductRepository : IRepository<Product>
 {
-    private readonly AppDbContext db;
+    private readonly AppDbContext _db;
 
     public ProductRepository(AppDbContext context)
     {
-        db = context;
+        _db = context;
     }
     
     public Product? Get(Guid id)
     {
-        return db.Products
+        return _db.Products
             .FirstOrDefault(o => o.Id == id);
     }
 
     public List<Product> GetAll()
     {
-        return db.Products
+        return _db.Products
             .ToList();
     }
     
 
     public void Add(Product product)
     {
-        db.Products.Add(product);
-        db.SaveChanges();
+        _db.Products.Add(product);
+        _db.SaveChanges();
     }
 
     public void Edit(Product product)
     {
-        db.Products.Update(product);
-        db.SaveChanges();
+        _db.Products.Update(product);
+        _db.SaveChanges();
     }
 }

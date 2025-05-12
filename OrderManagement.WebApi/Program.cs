@@ -36,8 +36,8 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
-        var dbContext = services.GetService<AppDbContext>();
-        var dbInitializer = services.GetService<IDbInitializer>();
+        var dbContext = services.GetRequiredService<AppDbContext>();
+        var dbInitializer = services.GetRequiredService<IDbInitializer>();
         dbInitializer.Initialize(dbContext);
     }
 }

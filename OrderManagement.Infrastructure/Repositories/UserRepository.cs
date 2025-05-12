@@ -5,35 +5,35 @@ namespace OrderManagement.Infrastructure.Repositories;
 
 public class UserRepository : IRepository<User>
 {
-    private readonly AppDbContext db;
+    private readonly AppDbContext _db;
 
     public UserRepository(AppDbContext context)
     {
-        db = context;
+        _db = context;
     }
     
     public User? Get(Guid id)
     {
-        return db.Users
+        return _db.Users
             .FirstOrDefault(o => o.Id == id);
     }
 
     public List<User> GetAll()
     {
-        return db.Users
+        return _db.Users
             .ToList();
     }
     
 
     public void Add(User user)
     {
-        db.Users.Add(user);
-        db.SaveChanges();
+        _db.Users.Add(user);
+        _db.SaveChanges();
     }
 
     public void Edit(User user)
     {
-        db.Users.Update(user);
-        db.SaveChanges();
+        _db.Users.Update(user);
+        _db.SaveChanges();
     }
 }
