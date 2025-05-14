@@ -90,7 +90,7 @@ To get this project up and running (general steps, actual steps may vary):
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/mrtng1/OrderManagementAPI.git
-    cd OrderManagementAPI
+    cd OrderManagement
     ```
 2.  **Restore dependencies:**
     ```bash
@@ -104,8 +104,8 @@ To get this project up and running (general steps, actual steps may vary):
     ```bash
     dotnet run
     ```
-    (Assuming the entry point project is `OrderManagement.WebApi` or similar. If you are in the root, you might use `dotnet run --project PathToYourWebApiProjectFile`)
-5.  The API should now be running, typically on `http://localhost:port` (e.g., `http://localhost:5000` or `https://localhost:5001`).
+    (Assuming the entry point project is `OrderManagement.WebApi` or similar. If you are in the root, you might use `dotnet run`)
+5.  The API should now be running, typically on `http://localhost:5119`.
 
 ## 🧪 Testing Approach
 

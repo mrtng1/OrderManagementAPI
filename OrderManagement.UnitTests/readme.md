@@ -1,5 +1,9 @@
 ﻿# OrderManagementAPI Unit Tests
 
+## UnitTests
+
+Run the unit tests with <code>dotnet test</code>
+
 ## Test Coverage
 
 TODO
