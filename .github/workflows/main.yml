@@ -28,10 +28,10 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore OrderManagement.sln # Hardcoded solution file
+        run: dotnet restore
 
       - name: Build solution
-        run: dotnet build OrderManagement.sln --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore
 
   unit_tests:
     name: Run Unit Tests
