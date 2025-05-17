@@ -11,8 +11,6 @@ This project showcases the implementation of a robust and testable API by adheri
 The **OrderManagementAPI** is built following the principles of **Clean Architecture**. This architectural pattern helps in creating a system that is:
 
 * **Independent of Frameworks:** The core business logic is not dependent on any specific framework.
-* **Testable:** Business rules can be tested without the UI, Database, Web Server, or any other external element.
-* **Independent of UI:** The UI can change easily, without changing the rest of the system.
 * **Independent of Database:** You can swap out your data storage solution without affecting business rules.
 * **Independent of any External Agency:** Business rules are self-contained and unaware of external specifics.
 
@@ -105,7 +103,7 @@ To get this project up and running (general steps, actual steps may vary):
     dotnet run
     ```
     (Assuming the entry point project is `OrderManagement.WebApi` or similar. If you are in the root, you might use `dotnet run`)
-5.  The API should now be running, typically on `http://localhost:5119`.
+5.  The API should now be running on `http://localhost:5119`.
 
 ## 🧪 Testing Approach
 

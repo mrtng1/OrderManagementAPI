@@ -318,8 +318,7 @@ namespace OrderManagement.UnitTests;
 
             // Act & Assert
             var ex = Assert.Throws<Exception>(() => _orderService.AdvanceOrderStatus(invalidOrderId));
-            Assert.Equal($"Order with ID {invalidOrderId} not found.", ex.Message);
-
+            Assert.Equal($"Order '{invalidOrderId}' not found.", ex.Message);
             _mockOrderRepo.Verify(repo => repo.Get(invalidOrderId), Times.Once());
             _mockOrderRepo.Verify(repo => repo.Edit(It.IsAny<Order>()), Times.Never());
         }
