@@ -1,10 +1,10 @@
-name: OrderManagementAPI CI Pipeline (Hardcoded)
+name: OrderManagementAPI CI Pipeline
 
 on:
   push:
-    branches: [ workflow ]
+    branches: [ main ]
   pull_request:
-    branches: [ workflow ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -14,10 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' # Hardcoded .NET version
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -41,10 +41,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -55,10 +55,10 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore OrderManagement.sln # Hardcoded solution file
+        run: dotnet restore OrderManagement.sln
 
       - name: Run Unit Tests
-        run: dotnet test OrderManagement.UnitTests/OrderManagement.UnitTests.csproj --configuration Release --no-build --logger "trx;LogFileName=unit_test_results.trx" # Hardcoded unit test project
+        run: dotnet test OrderManagement.UnitTests/OrderManagement.UnitTests.csproj --configuration Release --logger "trx;LogFileName=unit_test_results.trx"
 
       - name: Upload Unit Test Results
         if: always()
@@ -75,24 +75,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}-${{ hashFiles('**/*.csproj') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}}-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore OrderManagement.sln # Hardcoded solution file
+        run: dotnet restore
 
       - name: Run BDD Tests
-        run: dotnet test OrderManagement.AcceptanceTests/OrderManagement.AcceptanceTests.csproj --configuration Release --no-build --logger "trx;LogFileName=bdd_test_results.trx"
+        run: dotnet test OrderManagement.IntegrationTests
 
       - name: Upload BDD Test Results
         if: always()
@@ -111,29 +111,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}-${{ hashFiles('**/*.csproj') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}}-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore OrderManagement.sln # Hardcoded solution file
+        run: dotnet restore OrderManagement.sln
 
       - name: Install Stryker.NET tool
         run: dotnet tool install --global dotnet-stryker
 
       - name: Run Stryker.NET
-        # Adjust the command based on your Stryker configuration (stryker-config.json)
-        # This example assumes running at solution level.
-        run: dotnet stryker --solution OrderManagement.sln --reporter "html" --reporter "markdown" # Hardcoded solution file
+        run: dotnet stryker --solution OrderManagement.sln --reporter "html" --reporter "markdown"
 
       - name: Upload Stryker.NET Report
         if: always()
@@ -150,21 +148,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}-${{ hashFiles('**/*.csproj') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}}-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore OrderManagement.sln # Hardcoded solution file
+        run: dotnet restore OrderManagement.sln
 
       - name: Build Web API
         run: dotnet build OrderManagement.WebApi/OrderManagement.WebApi.csproj --configuration Release --no-restore
@@ -172,17 +170,17 @@ jobs:
       - name: Setup Node.js (for Newman)
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Hardcoded Node.js version
+          node-version: '20'
 
       - name: Install Newman and HTML Reporter
         run: npm install -g newman newman-reporter-htmlextra
 
       - name: Start API in background
         run: |
-          cd OrderManagement.WebApi # Adjust if your WebApi project is elsewhere
-          dotnet run --project OrderManagement.WebApi.csproj --launch-profile "http" & # Hardcoded WebApi project and path
+          cd OrderManagement.WebApi
+          dotnet run --project OrderManagement.WebApi.csproj --launch-profile "http" &
           API_PID=$!
-          echo "API_PID=$API_PID" >> $GITHUB_ENV # This uses GitHub Actions env for inter-step communication
+          echo "API_PID=$API_PID" >> $GITHUB_ENV
           cd ${{ github.workspace }}
           echo "Waiting for API to start..."
           sleep 30
@@ -205,30 +203,12 @@ jobs:
           done
 
       - name: Run Postman Tests with Newman
-        # Ensure your Postman collection and environment files are at these hardcoded paths
-        # Set POSTMAN_ENVIRONMENT_FILE to an empty string if not used, or remove the conditional part.
-        run: |
-          POSTMAN_COLLECTION_FILE='Tests/Postman/OrderManagementAPI.postman_collection.json'
-          POSTMAN_ENVIRONMENT_FILE='Tests/Postman/OrderManagementAPI.postman_environment.json' # Set to '' if no environment file
-
-          if [ -z "$POSTMAN_ENVIRONMENT_FILE" ]; then
-            newman run "$POSTMAN_COLLECTION_FILE" \
-              -r htmlextra,cli \
-              --reporter-htmlextra-export "postman_api_report.html" \
-              --suppress-exit-code
-          else
-            newman run "$POSTMAN_COLLECTION_FILE" \
-              -e "$POSTMAN_ENVIRONMENT_FILE" \
-              -r htmlextra,cli \
-              --reporter-htmlextra-export "postman_api_report.html" \
-              --suppress-exit-code
-          fi
-
+        run: newman run OrderManagement.IntegrationTests/ApiPostmanTests/OrdersApiTests.json
 
       - name: Stop API
         if: always()
         run: |
-          if [ ! -z "${{ env.API_PID }}" ]; then # env.API_PID here refers to the GITHUB_ENV variable set in a previous step
+          if [ ! -z "${{ env.API_PID }}" ]; then
             echo "Stopping API with PID ${{ env.API_PID }}"
             kill ${{ env.API_PID }} || echo "Failed to kill API process (PID: ${{ env.API_PID }}); it might have already stopped."
           else
