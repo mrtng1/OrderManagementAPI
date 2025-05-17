@@ -25,6 +25,8 @@ builder.Services.AddTransient<IDbInitializer, DbInitializer>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("Database"));
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -45,5 +47,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 
+app.MapHealthChecks("/healthz");
 
 app.Run();
