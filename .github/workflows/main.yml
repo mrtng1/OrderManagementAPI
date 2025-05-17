@@ -14,10 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' # Hardcoded .NET version
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -41,10 +41,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -58,7 +58,7 @@ jobs:
         run: dotnet restore OrderManagement.sln # Hardcoded solution file
 
       - name: Run Unit Tests
-        run: dotnet test OrderManagement.UnitTests/OrderManagement.UnitTests.csproj --configuration Release --no-build --logger "trx;LogFileName=unit_test_results.trx" # Hardcoded unit test project
+        run: dotnet test OrderManagement.UnitTests/OrderManagement.UnitTests.csproj --configuration Release --no-build --logger "trx;LogFileName=unit_test_results.trx"
 
       - name: Upload Unit Test Results
         if: always()
@@ -75,10 +75,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -111,10 +111,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -131,8 +131,6 @@ jobs:
         run: dotnet tool install --global dotnet-stryker
 
       - name: Run Stryker.NET
-        # Adjust the command based on your Stryker configuration (stryker-config.json)
-        # This example assumes running at solution level.
         run: dotnet stryker --solution OrderManagement.sln --reporter "html" --reporter "markdown" # Hardcoded solution file
 
       - name: Upload Stryker.NET Report
@@ -150,10 +148,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK 8.0.x
+      - name: Setup .NET SDK 9.0.x
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
