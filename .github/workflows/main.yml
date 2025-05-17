@@ -55,7 +55,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore OrderManagement.sln # Hardcoded solution file
+        run: dotnet restore OrderManagement.sln
 
       - name: Run Unit Tests
         run: dotnet test OrderManagement.UnitTests/OrderManagement.UnitTests.csproj --configuration Release --no-build --logger "trx;LogFileName=unit_test_results.trx"
@@ -84,12 +84,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}-${{ hashFiles('**/*.csproj') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}}-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore OrderManagement.sln # Hardcoded solution file
+        run: dotnet restore OrderManagement.sln
 
       - name: Run BDD Tests
         run: dotnet test OrderManagement.AcceptanceTests/OrderManagement.AcceptanceTests.csproj --configuration Release --no-build --logger "trx;LogFileName=bdd_test_results.trx"
@@ -120,18 +120,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}-${{ hashFiles('**/*.csproj') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}}-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore OrderManagement.sln # Hardcoded solution file
+        run: dotnet restore OrderManagement.sln
 
       - name: Install Stryker.NET tool
         run: dotnet tool install --global dotnet-stryker
 
       - name: Run Stryker.NET
-        run: dotnet stryker --solution OrderManagement.sln --reporter "html" --reporter "markdown" # Hardcoded solution file
+        run: dotnet stryker --solution OrderManagement.sln --reporter "html" --reporter "markdown"
 
       - name: Upload Stryker.NET Report
         if: always()
@@ -157,12 +157,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}-${{ hashFiles('**/*.csproj') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}}-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
-        run: dotnet restore OrderManagement.sln # Hardcoded solution file
+        run: dotnet restore OrderManagement.sln
 
       - name: Build Web API
         run: dotnet build OrderManagement.WebApi/OrderManagement.WebApi.csproj --configuration Release --no-restore
@@ -170,17 +170,17 @@ jobs:
       - name: Setup Node.js (for Newman)
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Hardcoded Node.js version
+          node-version: '20'
 
       - name: Install Newman and HTML Reporter
         run: npm install -g newman newman-reporter-htmlextra
 
       - name: Start API in background
         run: |
-          cd OrderManagement.WebApi # Adjust if your WebApi project is elsewhere
-          dotnet run --project OrderManagement.WebApi.csproj --launch-profile "http" & # Hardcoded WebApi project and path
+          cd OrderManagement.WebApi
+          dotnet run --project OrderManagement.WebApi.csproj --launch-profile "http" &
           API_PID=$!
-          echo "API_PID=$API_PID" >> $GITHUB_ENV # This uses GitHub Actions env for inter-step communication
+          echo "API_PID=$API_PID" >> $GITHUB_ENV
           cd ${{ github.workspace }}
           echo "Waiting for API to start..."
           sleep 30
@@ -203,11 +203,9 @@ jobs:
           done
 
       - name: Run Postman Tests with Newman
-        # Ensure your Postman collection and environment files are at these hardcoded paths
-        # Set POSTMAN_ENVIRONMENT_FILE to an empty string if not used, or remove the conditional part.
         run: |
           POSTMAN_COLLECTION_FILE='Tests/Postman/OrderManagementAPI.postman_collection.json'
-          POSTMAN_ENVIRONMENT_FILE='Tests/Postman/OrderManagementAPI.postman_environment.json' # Set to '' if no environment file
+          POSTMAN_ENVIRONMENT_FILE='Tests/Postman/OrderManagementAPI.postman_environment.json'
 
           if [ -z "$POSTMAN_ENVIRONMENT_FILE" ]; then
             newman run "$POSTMAN_COLLECTION_FILE" \
@@ -222,11 +220,10 @@ jobs:
               --suppress-exit-code
           fi
 
-
       - name: Stop API
         if: always()
         run: |
-          if [ ! -z "${{ env.API_PID }}" ]; then # env.API_PID here refers to the GITHUB_ENV variable set in a previous step
+          if [ ! -z "${{ env.API_PID }}" ]; then
             echo "Stopping API with PID ${{ env.API_PID }}"
             kill ${{ env.API_PID }} || echo "Failed to kill API process (PID: ${{ env.API_PID }}); it might have already stopped."
           else
